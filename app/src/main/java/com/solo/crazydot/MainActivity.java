@@ -1,26 +1,31 @@
 package com.solo.crazydot;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
-
-import com.solo.crazydot.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
-    ActivityMainBinding binding;
+
+    private CrazyDotView crazyDotView;
     private SensorManager sensorManager;
     private Sensor accelerometer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        crazyDotView = new CrazyDotView(this);
+        setContentView(crazyDotView);
         if (!InitSensor())
             Toast.makeText(this, "We Do not have Accelerometer", Toast.LENGTH_SHORT).show();
     }
@@ -51,9 +56,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        binding.textViewX.setText(String.valueOf(event.values[0]));
-        binding.textViewY.setText(String.valueOf(event.values[1]));
-        binding.textViewZ.setText(String.valueOf(event.values[2]));
+        final int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        final int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+        crazyDotView.update(screenWidth*event.values[0], screenHeight*event.values[1]);
     }
 
     @Override
