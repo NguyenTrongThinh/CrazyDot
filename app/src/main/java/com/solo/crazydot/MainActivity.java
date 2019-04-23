@@ -12,6 +12,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener{
 
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         final int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         final int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-        crazyDotView.update(screenWidth*event.values[0], screenHeight*event.values[1]);
+        crazyDotView.update(ThreadLocalRandom.current().nextInt(0, screenWidth), ThreadLocalRandom.current().nextInt(0, screenHeight));
     }
 
     @Override
